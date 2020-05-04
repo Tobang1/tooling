@@ -8,15 +8,15 @@ pipeline {
     }
     
     stage('Checkout'){
-            steps {
-            checkout([$class: 'GitSCM', 
-            branches: [[name: '*/feature/setup-builds]], 
-            doGenerateSubmoduleConfigurations: false, 
-            extensions: [], 
-            submoduleCfg: [], 
-            userRemoteConfigs: [[url: 'https://github.com/propitix/tooling.git']]])
+      steps {
+      checkout([$class: 'GitSCM', 
+      // branches: [[name: '*/feature/setup-builds]], 
+      doGenerateSubmoduleConfigurations: false, 
+      extensions: [], 
+      submoduleCfg: [], 
+      userRemoteConfigs: [[url: 'https://github.com/propitix/tooling.git']]])
 
-            }
+      }
         }
         
     stage('Build') {
