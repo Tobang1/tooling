@@ -77,7 +77,7 @@ pipeline {
         }
 
 
-        stage('Docker push')
+        stage('Docker Push')
         {
             steps
             {
@@ -95,12 +95,12 @@ pipeline {
         }
     }
 
-        post
-    {
-        always
-        {
-            // make sure that the Docker image is removed
-            sh "docker rmi $IMAGE | true"
-        }
-    }
+//         post
+//     {
+//         always
+//         {
+//             // make sure that the Docker image is removed
+//             sh "docker rmi $IMAGE | true"
+//         }
+//     }
 } 
