@@ -1,13 +1,25 @@
 pipeline {
   agent any
-  stages {
-    stage('Clean Workspace'){
-      steps {
-        cleanWs()
-      }
+
+      environment 
+    {
+        VERSION = 'latest'
+        PROJECT = 'tooling'
+        IMAGE   = 'tooling:latest'
+        ECRURL  = 'http://489122420391.dkr.ecr.eu-west-2.amazonaws.com'
+        ECRCRED = 'ecr:eu-west-1:tooling'
+
     }
+
+  stages {
+          stage('Clean Workspace'){
+            steps {
+              cleanWs()
+            }
+          }
     
-    stage('Checkout'){
+    stage('Checkout')
+    {
       steps {
       checkout([$class: 'GitSCM', 
       doGenerateSubmoduleConfigurations: false, 
@@ -17,33 +29,78 @@ pipeline {
 
       }
         }
-        
-    stage('Build') {
-      steps {
-        script {
-          // Build
-          sh 'docker build -t  489122420391.dkr.ecr.eu-west-2.amazonaws.com/tooling:latest .'
+
+          stage('Build preparations')
+        {
+            steps
+            {
+                script 
+                {
+                    // calculate GIT lastest commit short-hash
+                    gitCommitHash = sh(returnStdout: true, script: 'git rev-parse HEAD').trim()
+                    shortCommitHash = gitCommitHash.take(7)
+                    // calculate a sample version tag
+                    VERSION = shortCommitHash
+                    // set the build display name
+                    currentBuild.displayName = "#${BUILD_ID}-${VERSION}"
+                    IMAGE = "$PROJECT:$VERSION"
+                }
+            }
         }
-      }
-    }
+
+        stage('Docker build')
+        {
+            steps
+            {
+                script
+                {
+                    // Build the docker image using a Dockerfile
+                    docker.build("$IMAGE")
+                }
+            }
+        }
 
 
-    stage('Test') {
-      steps {
-        script {
-          // Build
-          sh 'echo "Testing Stage"'
+        stage('Test') 
+        {
+          steps 
+          {
+            script 
+            {
+              // Build
+              sh 'echo "Testing Stage"'
+
+            }
+
+          }
+          
         }
-      }
+
+
+        stage('Docker push')
+        {
+            steps
+            {
+                script
+                {
+                    // login to ECR - for now it seems that that the ECR Jenkins plugin is not performing the login as expected. I hope it will in the future.
+                    sh("eval \$(aws ecr get-login --no-include-email | sed 's|https://||')")
+                    // Push the Docker image to ECR
+                    docker.withRegistry(ECRURL, ECRCRED)
+                    {
+                        docker.image(IMAGE).push()
+                    }
+                }
+            }
+        }
     }
 
-    stage('Deploy') {
-      steps {
-        script {
-          // Build
-          sh 'docker push 489122420391.dkr.ecr.eu-west-2.amazonaws.com/tooling:latest'
+        post
+    {
+        always
+        {
+            // make sure that the Docker image is removed
+            sh "docker rmi $IMAGE | true"
         }
-      }
     }
-  }
-}
+} 
