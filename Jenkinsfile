@@ -21,8 +21,7 @@ pipeline {
       steps {
         script {
           // Build
-          sh 'echo "Building Stage"'
-          sh 'pwd' 
+          sh 'docker build .'
         }
       }
     }
@@ -41,7 +40,7 @@ pipeline {
       steps {
         script {
           // Build
-          sh 'echo "Deploy Stage"'
+          sh 'docker push 489122420391.dkr.ecr.eu-west-2.amazonaws.com/tooling:latest'
         }
       }
     }
