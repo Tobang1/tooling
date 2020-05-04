@@ -1,19 +1,9 @@
 pipeline {
-    agent {
-        docker {
-            image 'docker:latest'
-            // args '-v /root/.m2:/root/.m2'
-        }
-    }
+  agent any
   stages {
     stage('Clean Workspace'){
       steps {
-          script {
-          // Clean Up
-          sh 'echo "cleaning Up workspace"'
-        }
         cleanWs()
-
       }
     }
     
