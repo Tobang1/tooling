@@ -10,7 +10,6 @@ pipeline {
     stage('Checkout'){
       steps {
       checkout([$class: 'GitSCM', 
-      // branches: [[name: '*/feature/setup-builds]], 
       doGenerateSubmoduleConfigurations: false, 
       extensions: [], 
       submoduleCfg: [], 
@@ -23,7 +22,7 @@ pipeline {
       steps {
         script {
           // Build
-          sh 'docker build .'
+          sh 'docker build -t  489122420391.dkr.ecr.eu-west-2.amazonaws.com/tooling:latest .'
         }
       }
     }
