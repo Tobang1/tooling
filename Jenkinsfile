@@ -7,7 +7,7 @@ pipeline {
         PROJECT = 'tooling'
         IMAGE   = 'tooling:latest'
         ECRURL  = 'http://489122420391.dkr.ecr.eu-west-2.amazonaws.com'
-        ECRCRED = 'ecr:eu-west-1:tooling'
+        ECRCRED = 'ecr:eu-west-2:tooling'
 
     }
 
@@ -73,7 +73,7 @@ pipeline {
             }
 
           }
-          
+
         }
 
 
