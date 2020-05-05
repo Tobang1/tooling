@@ -86,7 +86,7 @@ pipeline {
                     // login to ECR - for now it seems that that the ECR Jenkins plugin is not performing the login as expected. I hope it will in the future.
                     sh("eval \$(aws ecr get-login --no-include-email | sed 's|https://||')")
                     // Push the Docker image to ECR
-                    // docker.withRegistry(ECRURL, ECRCRED)
+                    // docker.withRegistry(ECRURL, ECRCRED) - When the ECR Credentials plugin is fixed, then this can be used
                         docker.withRegistry(ECRURL)
                     {
                         docker.image(IMAGE).push()
@@ -96,12 +96,12 @@ pipeline {
         }
     }
 
-//         post
-//     {
-//         always
-//         {
-//             // make sure that the Docker image is removed
-//             sh "docker rmi $IMAGE | true"
-//         }
-//     }
+        post
+    {
+        always
+        {
+            // make sure that the Docker image is removed
+            sh "docker rmi $IMAGE | true"
+        }
+    }
 } 
