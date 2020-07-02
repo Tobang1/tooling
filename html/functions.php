@@ -1,8 +1,14 @@
 <?php 
 session_start();
 
+//database variables
+$dbServer_name = $_ENV['SERVERNAME'];
+$dbUser_name = $_ENV['USERNAME'];
+$dbPassword = $_ENV['PASSWORD'];
+$dbName = $_ENV['DATABASE'];
+
 // connect to database
-$db = mysqli_connect('localhost', 'admin', 'admin.com', 'multi_login');
+$db = mysqli_connect($dbServer_name, $dbUser_name, $dbPassword, $dbName);
 
 // variable declaration
 $username = "";
